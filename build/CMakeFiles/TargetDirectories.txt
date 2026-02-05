@@ -1,0 +1,3 @@
+/home/thalia/dev/projects/Project Argus -- License Plate Reader/build/CMakeFiles/argus_core.dir
+/home/thalia/dev/projects/Project Argus -- License Plate Reader/build/CMakeFiles/edit_cache.dir
+/home/thalia/dev/projects/Project Argus -- License Plate Reader/build/CMakeFiles/rebuild_cache.dir
