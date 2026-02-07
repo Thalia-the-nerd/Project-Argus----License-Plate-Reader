@@ -1,5 +1,6 @@
 import time
 import sys
+import cv2
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from detector import ArgusBrain
@@ -13,15 +14,23 @@ class NewFrameHandler(FileSystemEventHandler):
         if event.is_directory:
             return
         if event.src_path.endswith(".jpg"):
-            print(f">> New packet received: {event.src_path}")
-            # Give I/O a split second to finish writing the file
+            # Brief pause to ensure file write is finished
             time.sleep(0.1)
-            self.brain.scan_image(event.src_path)
+
+            # Process frame
+            annotated_frame = self.brain.scan_and_draw(event.src_path)
+
+            if annotated_frame is not None:
+                # Show the dashboard window
+                cv2.imshow("Argus Intelligence Dashboard", annotated_frame)
+
+                # Wait 1ms to allow the window to render graphics
+                cv2.waitKey(1)
 
 
 if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else "."
-    print(f">> Argus Intelligence Node watching: {path}")
+    print(f">> Argus Dashboard Online. Monitoring: {path}")
 
     event_handler = NewFrameHandler()
     observer = Observer()
@@ -33,4 +42,5 @@ if __name__ == "__main__":
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
+        cv2.destroyAllWindows()
     observer.join()
