@@ -5,26 +5,34 @@ import os
 
 class ArgusBrain:
     def __init__(self):
-        # Load the smallest YOLO model (nano) for speed
-        print(">> Loading Neural Network...")
+        # Load the model
         self.model = YOLO("yolov8n.pt")
-        print(">> Neural Network Online.")
 
-    def scan_image(self, image_path):
+    def scan_and_draw(self, image_path):
         if not os.path.exists(image_path):
-            return
+            return None
+
+        # Read the image from the buffer
+        frame = cv2.imread(image_path)
 
         # Run inference
-        results = self.model(image_path)
+        results = self.model(frame)
 
-        # Process results
+        # Draw the "Clean" UI
         for result in results:
-            boxes = result.boxes
-            for box in boxes:
-                # Class 2 is 'car', Class 7 is 'truck' in COCO dataset
-                # For real ALPR, you'd train a custom model for plates,
-                # but for this demo, we detect cars.
-                cls = int(box.cls[0])
-                if cls in [2, 5, 7]:  # car, bus, truck
-                    print(f"!! VEHICLE DETECTED in {image_path}")
-                    # In a real app, you would crop this box here
+            # Ultralytics plot() returns the image with boxes drawn
+            # line_width=2 makes it look sharp/clean
+            frame = result.plot(line_width=2, font_size=1)
+
+            # Add a Status Tag
+            cv2.putText(
+                frame,
+                "ARGUS SYSTEM // ONLINE",
+                (20, 30),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (0, 255, 0),
+                1,
+            )
+
+        return frame
