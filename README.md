@@ -5,3 +5,4 @@ High-performance ALPR system using C++ OpenCV for ingestion and Python YOLOv8 fo
 ## Stack
 - **Core:** C++ (Performance/Driver Layer)
 - **Analysis:** Python (Logic/Visualization Layer)
+(FINISHED)
